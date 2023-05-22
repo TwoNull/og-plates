@@ -23,8 +23,8 @@ import (
 
 var file *string = flag.String("file", "", "Specifies an absolute location of a single text file containing a word list. (Required)")
 var plt *string = flag.String("plt", "IGWT", "Specifies a plate design to check against. Different plates have different character lengths and reg. requirements. \nDefaults to \"In God We Trust\" (7.5 Char Limit).")
-var delay *time.Duration = flag.Duration("d", 1500, "Specifies a delay (in milliseconds) between each call to the DMV website. \nIf running without proxies or with a large word list, the delay value should be higher. Defaults to 1500ms")
-var retry *time.Duration = flag.Duration("r", 3000, "Specifies a delay (in milliseconds) to wait if a check is unsuccessful. \nIf running with proxies, the retry value can be much lower. Defaults to 3000ms")
+var delay *int = flag.Int("d", 1500, "Specifies a delay (in milliseconds) between each call to the DMV website. \nIf running without proxies or with a large word list, the delay value should be higher. Defaults to 1500ms")
+var retry *int = flag.Int("r", 3000, "Specifies a delay (in milliseconds) to wait if a check is unsuccessful. \nIf running with proxies, the retry value can be much lower. Defaults to 3000ms")
 var pfile *string = flag.String("proxy", "", "Specifies an absolute location of a text file containing a proxy list. \nProxies should be in ip:port:user:pass format. Defaults to use localhost for all tasks.")
 
 var wg sync.WaitGroup
@@ -58,7 +58,7 @@ func withFile(s string) {
 	}
 	for i := range words {
 		wg.Add(1)
-		time.Sleep(*delay * time.Millisecond)
+		time.Sleep(time.Duration(*delay) * time.Millisecond)
 		go postForm(words[i])
 	}
 	wg.Wait()
@@ -248,7 +248,11 @@ func postForm(word string) {
 	init.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36")
 	res, err := client.Do(init)
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Request Error")
+		time.Sleep(time.Duration(*retry) * time.Millisecond)
+		wg.Add(1)
+		postForm(word)
+		return
 	}
 	res.Body.Close()
 	req, err := http.NewRequest("POST", "https://www.dmv.virginia.gov/dmvnet/common/router.asp", data)
@@ -270,7 +274,11 @@ func postForm(word string) {
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36")
 	res, err = client.Do(req)
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Request Error")
+		time.Sleep(time.Duration(*retry) * time.Millisecond)
+		wg.Add(1)
+		postForm(word)
+		return
 	}
 	defer res.Body.Close()
 	z := html.NewTokenizer(res.Body)
@@ -293,7 +301,8 @@ func postForm(word string) {
 		}
 	}
 	log.Println("No Response, Regenning Cookies..")
-	time.Sleep(*retry * time.Millisecond)
+	time.Sleep(time.Duration(*retry) * time.Millisecond)
+	wg.Add(1)
 	postForm(word)
 }
 
