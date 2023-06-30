@@ -5,7 +5,6 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"golang.org/x/net/html"
 	"log"
 	"math/rand"
 	"net/http"
@@ -18,6 +17,8 @@ import (
 	"sync"
 	"time"
 
+	"golang.org/x/net/html"
+
 	"github.com/fatih/color"
 )
 
@@ -25,7 +26,7 @@ var file *string = flag.String("file", "", "Specifies an absolute location of a 
 var plt *string = flag.String("plt", "IGWT", "Specifies a plate design to check against. Different plates have different character lengths and reg. requirements. \nDefaults to \"In God We Trust\" (7.5 Char Limit).")
 var delay *int = flag.Int("d", 1500, "Specifies a delay (in milliseconds) between each call to the DMV website. \nIf running without proxies or with a large word list, the delay value should be higher. Defaults to 1500ms")
 var retry *int = flag.Int("r", 3000, "Specifies a delay (in milliseconds) to wait if a check is unsuccessful. \nIf running with proxies, the retry value can be much lower. Defaults to 3000ms")
-var pfile *string = flag.String("proxy", "", "Specifies an absolute location of a text file containing a proxy list. \nProxies should be in ip:port:user:pass format. Defaults to use localhost for all tasks.")
+var pfile *string = flag.String("proxy", "", "Specifies an absolute location of a text file containing a proxy list. \nProxies should be in ip:port:user:pass format and delineated by new lines. Defaults to use localhost for all tasks.")
 
 var wg sync.WaitGroup
 
@@ -82,7 +83,6 @@ func readProxies(path string) ([][]string, error) {
 		return nil, err
 	}
 	defer file.Close()
-
 	var proxies [][]string
 	scanner := bufio.NewScanner(file)
 	scanner.Split(bufio.ScanLines)
