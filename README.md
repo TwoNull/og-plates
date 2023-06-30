@@ -15,6 +15,9 @@
 </div>
 
 
+### Disclaimer
+
+This tool is meant to be a proof-of-concept only. I take no responsibility for the unintended consequences of sending thousands of simultaneous requests to a government website.
 
 ### Usage
 
