@@ -6,7 +6,7 @@
 
 <h3 align="center">OG Plates</h3>
   <p align="center">
-    A utility to check the availability of Virginia DMV vanity plates.
+    A utility to check bulk availability of Virginia DMV vanity plates.
     <br />
     <br />
     <a href="https://nullptrs.co/" target="_blank" rel="noopener noreferrer"><strong>Read the Full Writeup »</strong></a>
@@ -18,6 +18,8 @@
 ### Disclaimer
 
 This tool is meant to be a proof-of-concept only. I take no responsibility for the unintended consequences of sending thousands of simultaneous requests to a government website.
+
+<br />
 
 ### Usage
 
