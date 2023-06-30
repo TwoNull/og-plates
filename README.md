@@ -20,6 +20,7 @@
 
 1. Download the latest [release](https://github.com/TwoNull/og-plates/releases)
    <br />
+   <br />
 2. Unzip and run the tool from the command line:
    \
    MacOS/Linux
