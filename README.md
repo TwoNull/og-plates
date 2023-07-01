@@ -23,7 +23,7 @@ This tool is meant to be a proof-of-concept only. I take no responsibility for t
 
 ### Usage
 
-1. Download the latest [release](https://github.com/TwoNull/og-plates/releases)
+1. Download the latest [release](https://github.com/TwoNull/og-plates/releases/tag/Major)
    <br />
    <br />
 2. Unzip and run the tool from the command line:
